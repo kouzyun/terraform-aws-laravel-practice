@@ -5,6 +5,12 @@
 - AnsibleにてNginx, Php, php-fpmのインストールと各種設定
 - CircleCiでrsyncデプロイ自動化
 
+・構成図
+![無題のプレゼンテーション (7)](https://github.com/user-attachments/assets/3aaf5cd0-f4c7-40de-b87e-7bc8d550ed5a)
+
+・表示確認
+![303701229-18f7b396-0d48-4116-bce5-584b96ddd91b](https://github.com/user-attachments/assets/880726b0-70ba-4b6f-a1e2-14125522d2a8)
+
 ## Terraform環境構築
 
 - init. terrraform初期化
