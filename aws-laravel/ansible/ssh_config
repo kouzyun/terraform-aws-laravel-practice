@@ -1,0 +1,11 @@
+host webserver1
+    ProxyCommand sh -c "aws ssm start-session --target i-xxxxxxxxxxx --document-name AWS-StartSSHSession --parameters 'portNumber=%p' --profile default --region ap-northeast-1"
+    User ec2-user
+    IdentityFile ~/.ssh/menta-laravel-keypair.pem
+    ServerAliveInterval 15
+
+host webserver2
+    ProxyCommand sh -c "aws ssm start-session --target i-xxxxxxxxxxx --document-name AWS-StartSSHSession --parameters 'portNumber=%p' --profile default --region ap-northeast-1"
+    User ec2-user
+    IdentityFile ~/.ssh/menta-laravel-keypair.pem
+    ServerAliveInterval 15

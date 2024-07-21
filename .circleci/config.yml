@@ -1,0 +1,39 @@
+version: 2.1
+
+orbs:
+  aws-cli: circleci/aws-cli@3.1.3
+
+jobs:
+  deploy:
+    machine:
+      enabled: true
+    environment:
+      AWS_REGION: ap-northeast-1
+    steps:
+      - checkout
+      - aws-cli/setup:
+          role-arn: arn:aws:iam::${ACCOUNT_ID}:role/menta-circleci-oidc
+          aws-region: AWS_REGION
+      - add_ssh_keys:
+          fingerprints:
+            - "SHA256:qiJ8bEfRITKjGALbDIC+qCXsMrH0mqv/C5pgl7XTMu4"  
+      - run:
+          name: Install SSM Plugin
+          command: |
+            sudo apt-get update && sudo apt-get install -y curl unzip
+            curl "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/ubuntu_64bit/session-manager-plugin.deb" -o "session-manager-plugin.deb"
+            sudo dpkg -i session-manager-plugin.deb
+            session-manager-plugin
+      - run:
+          name: Add ssh config
+          command: cat ~/project/.circleci/circleci_ssh_config >> ~/.ssh/config
+      - run:
+          name: Run deploy.sh
+          command: sh ~/project/aws-laravel/deploy/deploy.sh
+
+workflows:
+  version: 2.1
+  deploy-ec2:
+    jobs:
+      - deploy:
+          context: oidc-aws

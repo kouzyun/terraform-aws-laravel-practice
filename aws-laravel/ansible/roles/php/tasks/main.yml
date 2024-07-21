@@ -1,0 +1,43 @@
+- name: Create directory
+  file:
+    path: /usr/local/etc/php-fpm.d/
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Install PHP
+  dnf:
+    name:
+      - php
+      - php-mysqli
+      - php-fpm
+      - php-json
+      - php-devel
+      - php-gd
+
+
+- name: Start php-fpm
+  systemd: name=php-fpm state=started enabled=yes
+
+- name: Copy php-fpm www.conf
+  copy:
+    src: "roles/php/files/{{ item.src }}"
+    dest: "/etc/php-fpm.d/{{ item.dest }}"
+    backup: no
+    owner: root
+    group: root
+    mode: 644
+  loop:
+    - { src: "php-fpm.conf", dest: . }
+    - { src: "www.conf", dest: . }
+  notify: restart php-fpm
+
+- name: Download Composer
+  get_url: url=https://getcomposer.org/installer  dest=/tmp/composer-setup.php
+
+- name: install composer
+  shell: chdir=/tmp php composer-setup.php
+
+- name: move composer.phar
+  shell: mv /tmp/composer.phar /bin/composer
